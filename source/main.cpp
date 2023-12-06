@@ -1,35 +1,38 @@
-#include <common.h>
+#include <server.h>
 
-using nlohmann::json;
+using namespace std::chrono_literals;
+using namespace nlohmann;
+using namespace PSDS;
 
 int main() 
 {
-    using namespace std::chrono_literals;
-
     zmq::context_t context{1};
 
     zmq::socket_t socket{context, zmq::socket_type::rep};
     socket.bind("tcp://*:4444");
 
-    json json_test = 
-    {
-        {"string", "resultado"},
-        {"int", 10},
-        {"double", 2.0f}
-    };
-
-    const std::string data{json_test.dump()};
-
     for (;;) 
     {
-        zmq::message_t request;
+        try
+        { 
+            zmq::message_t request;
 
-        socket.recv(request, zmq::recv_flags::none);
-        std::cout << "Received: " << request.to_string() << std::endl;
+            zmq::recv_result_t result = socket.recv(request, zmq::recv_flags::none);
 
-        std::this_thread::sleep_for(1s);
+            std::cout << "[SERVER-LOG]: Received Message: " << request.to_string() << std::endl;
 
-        socket.send(zmq::buffer(data), zmq::send_flags::none);
+            json processed_data = RequestHandler::process_request(request.to_string());
+
+            std::this_thread::sleep_for(1s);
+
+            std::string response = ResponseHandler::process_response(processed_data);
+
+            socket.send(zmq::buffer(response), zmq::send_flags::none);
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+        }
     }
 
     return 0;
