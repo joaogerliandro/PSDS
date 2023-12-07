@@ -19,8 +19,6 @@ int main()
 
             zmq::recv_result_t result = socket.recv(request, zmq::recv_flags::none);
 
-            std::cout << "[SERVER-LOG]: Received Message: " << request.to_string() << std::endl;
-
             json processed_data = RequestHandler::process_request(request.to_string());
 
             std::this_thread::sleep_for(1s);
@@ -35,5 +33,5 @@ int main()
         }
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }
