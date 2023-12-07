@@ -7,6 +7,11 @@
 #include <thread>
 #include <sstream>
 
+#include <jdbc/cppconn/driver.h>
+#include <jdbc/cppconn/connection.h>
+#include <jdbc/cppconn/statement.h>
+#include <jdbc/cppconn/resultset.h>
+
 #include <zmq.hpp>
 #include <nlohmann/json.hpp>
 

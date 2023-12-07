@@ -21,10 +21,15 @@ file(GLOB_RECURSE HEADERS RELATIVE ${PROJECT_SOURCE_DIR} "include/*.h")
 file(GLOB_RECURSE WRAPPERS RELATIVE ${PROJECT_SOURCE_DIR} "include/*.hpp")
 
 set(PROJECT_SOURCES
-        ${SOURCES}
-        ${HEADERS}
-        ${WRAPPERS}
+    ${SOURCES}
+    ${HEADERS}
+    ${WRAPPERS}
 )
+
+find_package(Threads REQUIRED)
+find_package(OpenSSL REQUIRED)
+
+include_directories(${PROJECT_SOURCE_DIR}/mysql/include)
 
 find_package(ZeroMQ REQUIRED)
 
@@ -44,4 +49,11 @@ target_link_libraries(
     libzmq
     cppzmq
     nlohmann_json::nlohmann_json
+    Threads::Threads
+    OpenSSL::Crypto 
+    OpenSSL::SSL
+    mysqlcppconn
 )
+
+target_link_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/mysql/lib64)
+target_link_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/mysql/lib64/vs14)
