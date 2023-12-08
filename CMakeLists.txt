@@ -83,7 +83,6 @@ else()
     target_link_libraries(
         ${PROJECT_NAME}  
         libzmq
-        cppzmq
         nlohmann_json::nlohmann_json
         ${LIBPQ_LIBRARIES}
     )
