@@ -21,3 +21,13 @@ enum ServiceType
     CancelOrder = 4,
     ProcessOrder = 5
 };
+
+enum OrderStatus
+{
+    CREATED = 0,
+    PROCESSING = 1,
+    CONFIRMED = 2,
+    CANCELING = 3,
+    CANCELED = 4,
+    PROCESSED = 5
+};

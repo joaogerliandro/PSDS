@@ -19,7 +19,7 @@ namespace PSDS
         {
             json processed_data;
 
-            int8_t status = 0;
+            int8_t status = OrderStatus::CREATED;
             std::string client_name = body_json["ClientName"];
             std::string tax_number = body_json["TaxNumber"];
             std::string product = body_json["Product"];
@@ -100,7 +100,7 @@ namespace PSDS
         {
             json processed_data;
 
-            std::string query = "SELECT * FROM Orders";
+            std::string query = "SELECT * FROM Orders WHERE Status = " + std::to_string(OrderStatus::PROCESSING);
 
             PGconn *conn = PQconnectdb(connection_string.c_str());
 
@@ -310,6 +310,73 @@ namespace PSDS
         {
             json processed_data;
 
+            std::string order_id = body_json["OrderId"];
+
+            std::string query = "UPDATE Orders SET Status = " + std::to_string(OrderStatus::CONFIRMED) + " WHERE OrderId = " + order_id;
+
+            PGconn *conn = PQconnectdb(connection_string.c_str());
+
+            if (PQstatus(conn) != CONNECTION_OK)
+            {
+                std::cerr << "Erro ao conectar ao banco de dados: " << PQerrorMessage(conn) << std::endl;
+                PQfinish(conn);
+
+                processed_data = json::parse(R"(
+                        {
+                            "Head": 
+                            {
+                                "Status": "NOK"
+                            },
+                            "Body":
+                            {
+                                "Message": "Falha na conexão com o servidor remoto ! Tente novamente outra hora."
+                            }
+                        }
+                    )");
+
+                return processed_data;
+            }
+
+            PGresult *res = PQexec(conn, query.c_str());
+
+            if (PQresultStatus(res) != PGRES_COMMAND_OK)
+            {
+                std::cerr << "Erro ao executar o comando UPDATE: " << PQerrorMessage(conn) << std::endl;
+                PQclear(res);
+                PQfinish(conn);
+
+                processed_data = json::parse(R"(
+                        {
+                            "Head": 
+                            {
+                                "Status": "NOK"
+                            },
+                            "Body":
+                            {
+                                "Message": "Falha ao confirmar pedido ! Tente novamente."
+                            }
+                        }
+                    )");
+
+                return processed_data;
+            }
+
+            PQclear(res);
+            PQfinish(conn);
+
+            processed_data = json::parse(R"(
+                    {
+                        "Head": 
+                        {
+                            "Status": "OK"
+                        },
+                        "Body":
+                        {
+                            "Message": "Pedido confirmado com sucesso !"
+                        }
+                    }
+                )");
+
             return processed_data;
         }
 
@@ -317,12 +384,80 @@ namespace PSDS
         {
             json processed_data;
 
+            std::string order_id = body_json["OrderId"];
+
+            std::string query = "UPDATE Orders SET Status = " + std::to_string(OrderStatus::CANCELING) + " WHERE OrderId = " + order_id;
+
+            PGconn *conn = PQconnectdb(connection_string.c_str());
+
+            if (PQstatus(conn) != CONNECTION_OK)
+            {
+                std::cerr << "Erro ao conectar ao banco de dados: " << PQerrorMessage(conn) << std::endl;
+                PQfinish(conn);
+
+                processed_data = json::parse(R"(
+                        {
+                            "Head": 
+                            {
+                                "Status": "NOK"
+                            },
+                            "Body":
+                            {
+                                "Message": "Falha na conexão com o servidor remoto ! Tente novamente outra hora."
+                            }
+                        }
+                    )");
+
+                return processed_data;
+            }
+
+            PGresult *res = PQexec(conn, query.c_str());
+
+            if (PQresultStatus(res) != PGRES_COMMAND_OK)
+            {
+                std::cerr << "Erro ao executar o comando UPDATE: " << PQerrorMessage(conn) << std::endl;
+                PQclear(res);
+                PQfinish(conn);
+
+                processed_data = json::parse(R"(
+                        {
+                            "Head": 
+                            {
+                                "Status": "NOK"
+                            },
+                            "Body":
+                            {
+                                "Message": "Falha ao cancelar pedido ! Tente novamente."
+                            }
+                        }
+                    )");
+
+                return processed_data;
+            }
+
+            PQclear(res);
+            PQfinish(conn);
+
+            processed_data = json::parse(R"(
+                    {
+                        "Head": 
+                        {
+                            "Status": "OK"
+                        },
+                        "Body":
+                        {
+                            "Message": "Pedido cancelado com sucesso !"
+                        }
+                    }
+                )");
+
             return processed_data;
         }
 
         static json process_order(json body_json)
         {
             json processed_data;
+
 
             return processed_data;
         }
