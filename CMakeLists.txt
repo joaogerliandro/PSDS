@@ -41,6 +41,8 @@ if(WIN32)
 
     find_package(nlohmann_json REQUIRED)
 else()
+    find_package(PQ REQUIRED)
+
     find_package(PkgConfig)
 
     pkg_check_modules(PC_ZeroMQ QUIET zmq)
@@ -79,6 +81,6 @@ else()
         libzmq
         cppzmq
         nlohmann_json::nlohmann_json
-        ${LIBPQ_LIBRARIES}
+        ${PQ_LIBRARIES}
     )
 endif()
