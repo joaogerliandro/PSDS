@@ -84,5 +84,5 @@ else()
         ${PostgreSQL_LIBRARIES}
     )
 
-    target_include_directories(SeuExecutavel PRIVATE ${PostgreSQL_INCLUDE_DIRS})
+    target_include_directories(${PROJECT_NAME} PRIVATE ${PostgreSQL_INCLUDE_DIRS})
 endif()
