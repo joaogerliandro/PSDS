@@ -19,9 +19,13 @@ int main()
 
             zmq::recv_result_t result = socket.recv(request, zmq::recv_flags::none);
 
+            std::cout << "New connection stabilished !" << std::endl;
+
             json processed_data = RequestHandler::process_request(request.to_string());
 
             std::this_thread::sleep_for(1s);
+
+            std::cout << "Request processed !" << std::endl;
 
             std::string response = processed_data.dump();
 
