@@ -41,7 +41,7 @@ if(WIN32)
 
     find_package(nlohmann_json REQUIRED)
 else()
-    find_package(PQ REQUIRED)
+    find_package(PostgreSQL REQUIRED)
 
     find_package(PkgConfig)
 
@@ -81,6 +81,8 @@ else()
         libzmq
         cppzmq
         nlohmann_json::nlohmann_json
-        ${PQ_LIBRARIES}
+        ${PostgreSQL_LIBRARIES}
     )
+
+    target_include_directories(SeuExecutavel PRIVATE ${PostgreSQL_INCLUDE_DIRS})
 endif()
