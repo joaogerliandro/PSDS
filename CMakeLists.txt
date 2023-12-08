@@ -5,7 +5,7 @@ message(STATUS "Project: ${PROJECT_NAME} (version ${CMAKE_PROJECT_VERSION})")
 message(STATUS "Build Type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "CMake Generator: ${CMAKE_GENERATOR}")
 
-set(CMAKE_CXX_STANDARD 17) 
+set(CMAKE_CXX_STANDARD 20) 
 set(CMAKE_CXX_EXTENSIONS ON) 
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
@@ -26,10 +26,11 @@ set(PROJECT_SOURCES
     ${WRAPPERS}
 )
 
-find_package(Threads REQUIRED)
-find_package(OpenSSL REQUIRED)
+find_path(LIBPQ_INCLUDE_DIRS NAMES libpq-fe.h PATH_SUFFIXES include)
+include_directories(${LIBPQ_INCLUDE_DIRS})
 
-include_directories(${PROJECT_SOURCE_DIR}/mysql/include)
+find_library(LIBPQ_LIBRARIES NAMES pq)
+link_directories(${LIBPQ_LIBRARIES})
 
 find_package(ZeroMQ REQUIRED)
 
@@ -49,11 +50,5 @@ target_link_libraries(
     libzmq
     cppzmq
     nlohmann_json::nlohmann_json
-    Threads::Threads
-    OpenSSL::Crypto 
-    OpenSSL::SSL
-    mysqlcppconn
+    ${LIBPQ_LIBRARIES}
 )
-
-target_link_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/mysql/lib64)
-target_link_directories(${PROJECT_NAME} PUBLIC ${PROJECT_SOURCE_DIR}/mysql/lib64/vs14)
