@@ -41,7 +41,11 @@ if(WIN32)
 
     find_package(nlohmann_json REQUIRED)
 else()
-    find_package(PostgreSQL REQUIRED)
+    find_path(LIBPQ_INCLUDE_DIRS NAMES libpq-fe.h PATH_SUFFIXES include)
+    include_directories(${LIBPQ_INCLUDE_DIRS})
+
+    find_library(LIBPQ_LIBRARIES NAMES pq)
+    link_directories(${LIBPQ_LIBRARIES})
 
     find_package(PkgConfig)
 
@@ -81,8 +85,6 @@ else()
         libzmq
         cppzmq
         nlohmann_json::nlohmann_json
-        ${PostgreSQL_LIBRARIES}
+        ${LIBPQ_LIBRARIES}
     )
-
-    target_include_directories(${PROJECT_NAME} PRIVATE ${PostgreSQL_INCLUDE_DIRS})
 endif()
