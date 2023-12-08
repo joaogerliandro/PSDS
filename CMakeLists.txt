@@ -26,29 +26,59 @@ set(PROJECT_SOURCES
     ${WRAPPERS}
 )
 
-find_path(LIBPQ_INCLUDE_DIRS NAMES libpq-fe.h PATH_SUFFIXES include)
-include_directories(${LIBPQ_INCLUDE_DIRS})
+if(WIN32)
+    find_path(LIBPQ_INCLUDE_DIRS NAMES libpq-fe.h PATH_SUFFIXES include)
+    include_directories(${LIBPQ_INCLUDE_DIRS})
 
-find_library(LIBPQ_LIBRARIES NAMES pq)
-link_directories(${LIBPQ_LIBRARIES})
+    find_library(LIBPQ_LIBRARIES NAMES pq)
+    link_directories(${LIBPQ_LIBRARIES})
 
-find_package(ZeroMQ REQUIRED)
+    find_package(ZeroMQ REQUIRED)
 
-include_directories(${ZeroMQ_INCLUDE_DIRS})
+    include_directories(${ZeroMQ_INCLUDE_DIRS})
 
-find_package(cppzmq REQUIRED)
+    find_package(cppzmq REQUIRED)
 
-find_package(nlohmann_json REQUIRED)
+    find_package(nlohmann_json REQUIRED)
+else()
+    find_package(PkgConfig)
+
+    pkg_check_modules(PC_ZeroMQ QUIET zmq)
+
+    find_path(ZeroMQ_INCLUDE_DIR
+            NAMES zmq.hpp
+            PATHS ${PC_ZeroMQ_INCLUDE_DIRS}
+            )
+
+    find_library(ZeroMQ_LIBRARY
+            NAMES zmq
+            PATHS ${PC_ZeroMQ_LIBRARY_DIRS}
+            )
+
+    find_package(cppzmq REQUIRED)
+
+    find_package(nlohmann_json REQUIRED)
+endif()
 
 add_executable(
     ${PROJECT_NAME}
     ${PROJECT_SOURCES}
 )
 
-target_link_libraries(
-    ${PROJECT_NAME}  
-    libzmq
-    cppzmq
-    nlohmann_json::nlohmann_json
-    ${LIBPQ_LIBRARIES}
-)
+if(WIN32)
+    target_link_libraries(
+        ${PROJECT_NAME}  
+        libzmq
+        cppzmq
+        nlohmann_json::nlohmann_json
+        ${LIBPQ_LIBRARIES}
+    )
+else()
+    target_link_libraries(
+        ${PROJECT_NAME}  
+        libzmq
+        cppzmq
+        nlohmann_json::nlohmann_json
+        ${LIBPQ_LIBRARIES}
+    )
+endif()
