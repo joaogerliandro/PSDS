@@ -36,6 +36,9 @@ namespace PSDS
                     case ServiceType::GetOrderList:
                         processed_data = ServiceHandler::get_order_list(body_json);
                         break;
+                    case ServiceType::GetOrderListByTaxNumber:
+                        processed_data = ServiceHandler::get_order_list_by_taxnumber(body_json);
+                        break;
                     case ServiceType::ConfirmOrder:
                         processed_data = ServiceHandler::confirm_order(body_json);
                         break;

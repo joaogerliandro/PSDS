@@ -16,8 +16,8 @@ enum ServiceType
 {
     CreateOrder = 0,
     GetOrderList = 1,
-    ConfirmOrder = 2,
-    CancelOrder = 3,
-    ProcessOrder = 4,
-    SaveLog = 5
+    GetOrderListByTaxNumber = 2,
+    ConfirmOrder = 3,
+    CancelOrder = 4,
+    ProcessOrder = 5
 };
