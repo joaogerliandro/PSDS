@@ -18,8 +18,7 @@ enum ServiceType
     GetOrderList = 1,
     GetOrderListByTaxNumber = 2,
     ConfirmOrder = 3,
-    CancelOrder = 4,
-    ProcessOrder = 5
+    CancelOrder = 4
 };
 
 enum OrderStatus

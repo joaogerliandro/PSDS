@@ -45,9 +45,6 @@ namespace PSDS
                     case ServiceType::CancelOrder:
                         processed_data = ServiceHandler::cancel_order(body_json);
                         break;
-                    case ServiceType::ProcessOrder:
-                        processed_data = ServiceHandler::process_order(body_json);
-                        break;
                     default:
                         processed_data = ServiceHandler::process_default_error();
                         break;

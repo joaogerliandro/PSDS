@@ -4,7 +4,7 @@
 
 using namespace nlohmann;
 
-std::string hostname = "127.0.0.1";
+std::string hostname = "18.228.206.18";
 std::string database = "postgres";
 std::string username = "postgres";
 std::string password = "root";
@@ -450,14 +450,6 @@ namespace PSDS
                         }
                     }
                 )");
-
-            return processed_data;
-        }
-
-        static json process_order(json body_json)
-        {
-            json processed_data;
-
 
             return processed_data;
         }
