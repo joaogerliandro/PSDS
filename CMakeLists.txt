@@ -55,7 +55,7 @@ else()
             PATHS ${PC_ZeroMQ_LIBRARY_DIRS}
             )
 
-    find_package(cppzmq REQUIRED)
+    include_directories(${PROJECT_SOURCE_DIR}/external/include())
 
     find_package(nlohmann_json REQUIRED)
 endif()
